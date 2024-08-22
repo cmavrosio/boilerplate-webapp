@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <script>
+        // Redirect to dashboard if the user is authenticated
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+
+    <header>
+        <nav>
+            <h1>My App</h1>
+            <div id="nav-buttons">
+                <a href="login.html" class="btn">Login/Sign Up</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Welcome to My App</h2>
+                <p>Join us today to manage your subscriptions and products.</p>
+                <a href="login.html" class="btn hero-btn">Get Started</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My App. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

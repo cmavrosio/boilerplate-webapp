@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"  # Expose backend on localhost:8000
+    volumes:
+      - ./backend/app:/app/app
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"  # Expose frontend on localhost:8080
+    volumes:
+      - ./frontend:/usr/share/nginx/html
