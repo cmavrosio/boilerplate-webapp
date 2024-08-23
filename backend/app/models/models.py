@@ -92,6 +92,7 @@ class ProductResponse(SQLModel):
     url: Optional[str] = None  # URL of the product, if any
     price_info: Optional[PriceResponse] = None
 
+
 class SubscriptionCreate(SQLModel):
     product_id: int
 

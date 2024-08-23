@@ -1,3 +1,5 @@
 # Pending - TODO
--  Email Verification 
-- 
+- Allow users to subscribe 
+- Access /app only if subscribed 
+- Email Verification 
+-  

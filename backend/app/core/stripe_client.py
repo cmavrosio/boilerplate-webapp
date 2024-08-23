@@ -4,18 +4,7 @@ from fastapi import HTTPException, status
 
 stripe.api_key = settings.STRIPE_API_KEY
 
-def create_stripe_product(name: str) -> str:
-    product = stripe.Product.create(name=name)
-    return product.id
-
-def create_stripe_subscription(customer_id: str, price_id: str) -> str:
-    subscription = stripe.Subscription.create(
-        customer=customer_id,
-        items=[{"price": price_id}],
-    )
-    return subscription.id
-
-def create_stripe_customer(email: str, name: str):
+def create_stripe_customer(email: str, name: str) -> str:
     customer = stripe.Customer.create(
         email=email,
         name=name,
@@ -33,21 +22,30 @@ def get_all_products_with_prices() -> list:
         return products
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))
-    
+
 def has_active_subscription(customer_id: str) -> bool:
     subscriptions = stripe.Subscription.list(customer=customer_id, status='all')
     active_subscriptions = [sub for sub in subscriptions.auto_paging_iter() if sub.status in ['active', 'trialing']]
+    print(subscriptions)
     return len(active_subscriptions) > 0
 
-
 def has_purchased_lifetime_product(customer_id: str, lifetime_product_id: str) -> bool:
-    charges = stripe.Charge.list(customer=customer_id)
-    for charge in charges.auto_paging_iter():
-        if charge.paid and charge.amount_refunded == 0:
-            for line_item in charge.invoice.lines.data:
-                if line_item.price.product == lifetime_product_id:
+    try:
+        charges = stripe.Charge.list(customer=customer_id)
+        for charge in charges.auto_paging_iter():
+            if charge.paid and charge.amount_refunded == 0:
+                if charge.metadata and charge.metadata.get("product_id") == lifetime_product_id:
+                    print(f"Found charge with matching product_id in metadata: {charge.id}")
                     return True
-    return False
 
-
-
+                if charge.invoice:
+                    invoice = stripe.Invoice.retrieve(charge.invoice)
+                    if invoice.status in ['paid', 'open']:  # Ensure invoice is finalized
+                        for line_item in invoice.lines.data:
+                            if line_item.price.product == lifetime_product_id:
+                                print(f"Found matching product_id in invoice: {invoice.id}")
+                                return True
+        print("No matching lifetime product purchase found.")
+        return False
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))

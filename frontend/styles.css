@@ -180,14 +180,72 @@ body {
   }
   
 .centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 20px; /* Optional: add space between the elements */
 }
+
 
 .title {
     font-size: 3em; /* Adjust size as needed */
     color: white;
     text-align: center;
+}
+.centered {
+  display: flex;
+  flex-direction: column; /* Keep the title above */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  gap: 20px; /* Space between title and cards */
+}
+
+.product-cards-container {
+  display: flex;
+  flex-direction: row; /* Arrange cards in a row */
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Space between the cards */
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 300px;
+  text-align: center;
+  margin: 10px;
+}
+
+.product-title {
+  font-size: 1.5em;
+  margin: 10px 0;
+  color: #555;
+}
+
+.product-price {
+  color: white;
+  font-size: 1.2em;
+}
+
+.product-description {
+  font-size: 1em;
+  margin-bottom: 20px;
+  color: white
+}
+
+.buy-button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.buy-button:hover {
+  background-color: #218838;
 }
