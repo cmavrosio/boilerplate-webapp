@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     ENDPOINT_SECRET: str = os.getenv("ENDPOINT_SECRET")
-
+    LIFETIME_PRODUCT_ID: str = os.getenv("LIFE_TIME_PRODUCT_ID")
+    SUBSCRIPTION_PRODUCT_ID: str = os.getenv("SUBSCRIPTION_PRODUCT_ID")
     class Config:
         env_file = ".env"
 

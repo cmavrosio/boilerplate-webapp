@@ -32,6 +32,3 @@ def init_db():
             session.add(admin)
             session.commit()
             session.refresh(admin)
-            print("Admin user created with email 'admin@example.com' and password 'admin'")
-        else:
-            print("Admin user already exists")

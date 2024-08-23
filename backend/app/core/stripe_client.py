@@ -24,18 +24,19 @@ def get_all_products_with_prices() -> list:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))
 
 def has_active_subscription(customer_id: str) -> bool:
+    subscription_product_id = settings.SUBSCRIPTION_PRODUCT_ID
     subscriptions = stripe.Subscription.list(customer=customer_id, status='all')
     active_subscriptions = [sub for sub in subscriptions.auto_paging_iter() if sub.status in ['active', 'trialing']]
-    print(subscriptions)
+    active_subscriptions = [sub for sub in active_subscriptions if sub.plan.product == subscription_product_id]
     return len(active_subscriptions) > 0
 
-def has_purchased_lifetime_product(customer_id: str, lifetime_product_id: str) -> bool:
+def has_purchased_lifetime_product(customer_id: str) -> bool:
+    lifetime_product_id = settings.LIFETIME_PRODUCT_ID
     try:
         charges = stripe.Charge.list(customer=customer_id)
         for charge in charges.auto_paging_iter():
             if charge.paid and charge.amount_refunded == 0:
                 if charge.metadata and charge.metadata.get("product_id") == lifetime_product_id:
-                    print(f"Found charge with matching product_id in metadata: {charge.id}")
                     return True
 
                 if charge.invoice:
@@ -43,9 +44,10 @@ def has_purchased_lifetime_product(customer_id: str, lifetime_product_id: str) -
                     if invoice.status in ['paid', 'open']:  # Ensure invoice is finalized
                         for line_item in invoice.lines.data:
                             if line_item.price.product == lifetime_product_id:
-                                print(f"Found matching product_id in invoice: {invoice.id}")
                                 return True
-        print("No matching lifetime product purchase found.")
         return False
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))
+    
+def check_if_active_subscription(customer_id: str) -> bool:
+    return has_active_subscription(customer_id) or has_purchased_lifetime_product(customer_id)

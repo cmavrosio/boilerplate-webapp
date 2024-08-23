@@ -1,8 +1,6 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List, Dict
 
-# User Models
-
 class UserCreate(SQLModel):
     email: str
     full_name: str
@@ -17,9 +15,7 @@ class User(SQLModel, table=True):
     is_active: bool = True
     is_admin: bool = False  # New field to indicate admin status
     stripe_customer_id: Optional[str] = None
-
-    subscriptions: List["Subscription"] = Relationship(back_populates="user")
-
+    valid_subscription: bool = False 
 
 class UserResponse(SQLModel):
     id: int
@@ -27,20 +23,7 @@ class UserResponse(SQLModel):
     full_name: str
     is_active: bool
     stripe_customer_id: Optional[str] = None
-
-# Product Models
-
-class ProductCreate(SQLModel):
-    name: str
-
-
-class Product(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-    stripe_product_id: str
-
-    subscriptions: List["Subscription"] = Relationship(back_populates="product")
-
+    valid_subscription: bool = False
 
 
 class Recurring(SQLModel):
@@ -91,24 +74,3 @@ class ProductResponse(SQLModel):
     updated: int  # Timestamp of the last product update
     url: Optional[str] = None  # URL of the product, if any
     price_info: Optional[PriceResponse] = None
-
-
-class SubscriptionCreate(SQLModel):
-    product_id: int
-
-
-class Subscription(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id")
-    product_id: int = Field(foreign_key="product.id")
-    stripe_subscription_id: str
-
-    user: Optional[User] = Relationship(back_populates="subscriptions")
-    product: Optional[Product] = Relationship(back_populates="subscriptions")
-
-
-class SubscriptionResponse(SQLModel):
-    id: int
-    user_id: int
-    product_id: int
-    stripe_subscription_id: str

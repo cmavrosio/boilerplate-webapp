@@ -9,6 +9,7 @@ from app.core.auth import authenticate_user, get_current_user
 from app.core.dependencies import get_db_session
 from app.models.models import User
 from app.core.security import get_password_hash
+from app.core.stripe_client import check_if_active_subscription
 
 router = APIRouter()
 
@@ -25,6 +26,11 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), ses
     access_token = create_access_token(
         data={"sub": str(user.id)}, expires_delta=access_token_expires
     )
+    subscription_status = check_if_active_subscription(user.stripe_customer_id)
+    user.valid_subscription = subscription_status
+    session.add(user)
+    session.commit()
+
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/register/", response_model=User)

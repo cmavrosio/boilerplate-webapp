@@ -2,9 +2,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from app.core.stripe_client import get_all_products_with_prices
-from app.models.models import Product, ProductResponse, User
+from app.models.models import ProductResponse, User
 from app.core.dependencies import get_db_session
-from app.core.auth import get_current_user, admin_required
+from app.core.auth import get_current_user
 from app.core.config import settings  # Import settings to get your Stripe API key
 
 

@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({ price_id: priceId, mode: mode, product_id: productId}) // Send mode with the request
+                body: JSON.stringify({ price_id: priceId, mode: mode}) // Send mode with the request
             });
 
             if (response.ok) {
