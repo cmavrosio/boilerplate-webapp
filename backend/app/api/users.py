@@ -14,8 +14,9 @@ router = APIRouter(
 
 @router.post("/", response_model=UserResponse)
 def create_user(user_create: UserCreate, session: Session = Depends(get_db_session)):
-    existing_user = session.exec(select(User).where(User.email == user_create.email))
+    existing_user = session.exec(select(User).where(User.email == user_create.email)).all()
     if existing_user:
+        print(existing_user)
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = get_password_hash(user_create.password)
     stripe_customer_id = create_stripe_customer(email=user_create.email, name=user_create.full_name)

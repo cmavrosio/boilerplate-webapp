@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     const backendUrl = 'http://localhost:8000';  // Adjust as necessary for Docker
 
-    const loginForm = document.querySelector('.login-form');
+    const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const formData = new FormData();
-            formData.append('username', document.getElementById('email').value);
-            formData.append('password', document.getElementById('password').value);
+            formData.append('username', document.getElementById('login-email').value);
+            formData.append('password', document.getElementById('login-password').value);
 
             try {
                 const response = await fetch(`${backendUrl}/token`, {
@@ -51,12 +51,20 @@ document.addEventListener('DOMContentLoaded', function() {
         signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const password = document.getElementById('signup-password').value;
+            const passwordVerify = document.getElementById('signup-password-verify').value;
+    
+            if (password !== passwordVerify) {
+                alert('Passwords do not match. Please try again.');
+                return;
+            }
+    
             const signupData = {
                 full_name: document.getElementById('signup-full_name').value,
                 email: document.getElementById('signup-email').value,
-                password: document.getElementById('signup-password').value
+                password: password
             };
-
+    
             try {
                 const response = await fetch(`${backendUrl}/users/`, {
                     method: 'POST',
@@ -65,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify(signupData),
                 });
-
+    
                 if (response.ok) {
                     const data = await response.json();
                     console.log("Signup successful:", data);
@@ -74,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.access_token) {
                         console.log("Received token:", data.access_token);
                         sessionStorage.setItem('token', data.access_token);
-                        sessionStorage.setItem()
                     }
                 
                     // Redirect to the login page

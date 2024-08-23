@@ -26,7 +26,7 @@ class UserResponse(SQLModel):
     email: str
     full_name: str
     is_active: bool
-    stripe_customer_id: str = None
+    stripe_customer_id: Optional[str] = None
 
 # Product Models
 

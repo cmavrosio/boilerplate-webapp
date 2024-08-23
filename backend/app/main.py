@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware
-from app.api import users, products, auth
+from app.api import users, products, auth, subscriptions
 from app.db.database import init_db
 
 app = FastAPI()
@@ -28,3 +28,4 @@ def on_startup():
 app.include_router(auth.router, tags=["auth"])
 app.include_router(users.router, tags=["users"])
 app.include_router(products.router, tags=["products"])
+app.include_router(subscriptions.router, tags=["subscriptions"])
