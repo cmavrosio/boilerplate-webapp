@@ -3,60 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Sign Up</title>
+    <title>Login/Signup</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <h1>My App</h1>
-            <div>
-                <a href="index.html" class="btn">Home</a>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <section class="form-section">
-            <h2>Login</h2>
-            <form id="login-form" method="post">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" required>
-                </div>
-                <button type="submit" class="btn">Login</button>
-            </form>
-        </section>
-
-        <section class="form-section">
-            <h2>Sign Up</h2>
-            <form id="signup-form" method="post">
-                <div class="form-group">
-                    <label for="signup-full_name">Full Name</label>
-                    <input type="text" id="signup-full_name" name="full_name" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" name="password" required>
-                </div>
-                <button type="submit" class="btn">Sign Up</button>
-            </form>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 My App. All rights reserved.</p>
-    </footer>
-
-    <script src="scripts/storage.js"></script>
+    <div class="form-container">
+        <form class="login-form">
+            <span class="input-span">
+                <label for="email" class="label">Email</label>
+                <input type="email" name="email" id="email"/>
+            </span>
+            <span class="input-span">
+                <label for="password" class="label">Password</label>
+                <input type="password" name="password" id="password"/>
+            </span>
+            <span class="span"><a href="#">Forgot password?</a></span>
+            <input class="submit" type="submit" value="Log in" />
+            <span class="span">Don't have an account? <a href="#">Sign up</a></span>
+        </form>
+    </div>
     <script src="scripts/auth.js"></script>
 </body>
 </html>

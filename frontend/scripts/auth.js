@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     const backendUrl = 'http://localhost:8000';  // Adjust as necessary for Docker
 
-    const loginForm = document.getElementById('login-form');
+    const loginForm = document.querySelector('.login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const formData = new FormData();
-            formData.append('username', document.getElementById('login-email').value);
-            formData.append('password', document.getElementById('login-password').value);
+            formData.append('username', document.getElementById('email').value);
+            formData.append('password', document.getElementById('password').value);
 
             try {
                 const response = await fetch(`${backendUrl}/token`, {
@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     sessionStorage.setItem('token', data.access_token);
                 
                     // Redirect to the dashboard
+                    console.log('Redirecting to dashboard...');
                     window.location.href = 'dashboard.html';
                 } else {
                     const errorData = await response.json();
