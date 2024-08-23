@@ -71,8 +71,6 @@ async def create_checkout_session(
                 cancel_url="http://localhost:8080/cancel",
                 payment_intent_data={"metadata": {"product_id": product_id}}
             )
-        print("Checkout Session created:", session.metadata)
-
         return {"sessionId": session["id"]}
     except stripe.error.StripeError as e:
         raise HTTPException(status_code=400, detail=str(e))
