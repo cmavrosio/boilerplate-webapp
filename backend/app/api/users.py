@@ -5,6 +5,7 @@ from app.models.models import UserCreate, User, UserResponse
 from app.core.dependencies import get_db_session
 from app.core.security import get_password_hash
 from app.core.auth import admin_required
+from app.core.stripe_client import create_stripe_customer
 
 router = APIRouter(
     prefix="/users",  # Set the prefix to "/users"
@@ -13,11 +14,16 @@ router = APIRouter(
 
 @router.post("/", response_model=UserResponse)
 def create_user(user_create: UserCreate, session: Session = Depends(get_db_session)):
+    existing_user = session.exec(select(User).where(User.email == user_create.email))
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
     hashed_password = get_password_hash(user_create.password)
+    stripe_customer_id = create_stripe_customer(email=user_create.email, name=user_create.full_name)
     user = User(
         email=user_create.email,
         full_name=user_create.full_name,
-        hashed_password=hashed_password
+        hashed_password=hashed_password,
+        stripe_customer_id=stripe_customer_id
     )
     session.add(user)
     session.commit()

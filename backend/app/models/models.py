@@ -16,6 +16,7 @@ class User(SQLModel, table=True):
     hashed_password: str
     is_active: bool = True
     is_admin: bool = False  # New field to indicate admin status
+    stripe_customer_id: Optional[str] = None
 
     subscriptions: List["Subscription"] = Relationship(back_populates="user")
 
@@ -25,6 +26,7 @@ class UserResponse(SQLModel):
     email: str
     full_name: str
     is_active: bool
+    stripe_customer_id: str = None
 
 # Product Models
 
