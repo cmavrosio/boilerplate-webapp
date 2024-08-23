@@ -20,9 +20,7 @@ router = APIRouter(
 endpoint_secret = settings.ENDPOINT_SECRET
 
 @router.get("/status")
-def get_subscription_status(current_user: User = Depends(get_current_user), db: Session = Depends(get_db_session)):
-    # Check the subscription status using the stripe client
-    
+def get_subscription_status(current_user: User = Depends(get_current_user), db: Session = Depends(get_db_session)):    
     return {"subscription_status": check_if_active_subscription(current_user.stripe_customer_id)}
 
 @router.post("/create-checkout-session")

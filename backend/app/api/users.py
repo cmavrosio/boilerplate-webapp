@@ -8,7 +8,7 @@ from app.core.auth import admin_required
 from app.core.stripe_client import create_stripe_customer
 
 router = APIRouter(
-    prefix="/users",  # Set the prefix to "/users"
+    prefix="/users", 
     tags=["users"]
 )
 

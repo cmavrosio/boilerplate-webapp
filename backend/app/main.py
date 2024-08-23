@@ -5,26 +5,24 @@ from app.db.database import init_db
 
 app = FastAPI()
 
-# CORS configuration
 origins = [
-    "http://localhost:8080",  # Frontend URL
-    "http://127.0.0.1:8080",  # Another common frontend URL
-    # Add more origins as needed
+    "http://localhost:8080",  
+    "http://127.0.0.1:8080",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Allow specific origins
-    allow_credentials=True,  # Allow cookies to be included in requests
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.on_event("startup")
 def on_startup():
     init_db()
 
-# Include routers without additional prefixes
+
 app.include_router(auth.router, tags=["auth"])
 app.include_router(users.router, tags=["users"])
 app.include_router(products.router, tags=["products"])

@@ -1,4 +1,3 @@
-from fastapi import Depends
 from app.db.database import get_session
 from sqlmodel import Session
 

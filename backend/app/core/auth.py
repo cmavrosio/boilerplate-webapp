@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+
 from datetime import datetime, timedelta
 from sqlmodel import Session, select
 
@@ -9,10 +10,7 @@ from app.core.config import settings
 from app.models.models import User
 from app.core.dependencies import get_db_session
 
-# Dependency
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-# Password hashing utilities
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
@@ -21,7 +19,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
-# JWT utilities
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
