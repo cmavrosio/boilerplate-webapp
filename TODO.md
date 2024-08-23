@@ -1,0 +1,3 @@
+# Pending - TODO
+-  Email Verification 
+- 
