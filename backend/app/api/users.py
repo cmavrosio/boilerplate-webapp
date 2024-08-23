@@ -28,16 +28,16 @@ def create_user(user_create: UserCreate, session: Session = Depends(get_db_sessi
     session.add(user)
     session.commit()
     session.refresh(user)
-    return UserResponse.from_orm(user)
+    return UserResponse.model_validate(user)
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: int, session: Session = Depends(get_db_session)):
     user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return UserResponse.from_orm(user)
+    return UserResponse.model_validate(user)
 
 @router.get("/", response_model=List[UserResponse])
 def get_all_users(session: Session = Depends(get_db_session), current_user: User = Depends(admin_required)):
     users = session.exec(select(User).order_by(User.id)).all()
-    return [UserResponse.from_orm(user) for user in users]
+    return [UserResponse.model_validate(user) for user in users]
