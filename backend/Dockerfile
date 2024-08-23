@@ -13,6 +13,7 @@ COPY app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy the rest of the application code
+COPY .env .
 COPY . /app
 
 # Make port 8000 available to the world outside this container

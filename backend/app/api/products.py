@@ -1,46 +1,38 @@
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session, select
-from app.models.models import ProductCreate, Product, ProductResponse, User
+from sqlmodel import Session
+import stripe
+from app.models.models import Product, ProductResponse, User
 from app.core.dependencies import get_db_session
-from app.core.auth import get_current_user
-from app.core.stripe_client import create_stripe_product
-from app.core.auth import admin_required  # Import the admin check dependency
+from app.core.auth import get_current_user, admin_required
+from app.core.config import settings  # Import settings to get your Stripe API key
+
+# Initialize the Stripe client with your secret key
+stripe.api_key = settings.STRIPE_API_KEY
 
 router = APIRouter(
     prefix="/products",
     tags=["products"]
 )
 
-@router.post("/", response_model=ProductResponse)
-def create_product(product_create: ProductCreate, session: Session = Depends(get_db_session), current_user: User = Depends(admin_required)):
-    stripe_product_id = create_stripe_product(product_create.name)
-    product = Product(
-        name=product_create.name,
-        stripe_product_id=stripe_product_id
-    )
-    session.add(product)
-    session.commit()
-    session.refresh(product)
-    return ProductResponse.from_orm(product)
+@router.get("/", response_model=list[ProductResponse])
+async def get_products(
+    db: Session = Depends(get_db_session),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        # Retrieve the list of products from Stripe
+        products = [] 
+        stripe_products = stripe.Product.list()
+        for product in stripe_products.get("data"):
+            product_price_data = stripe.Price.retrieve(product.get('default_price'))
+            product['price_info'] = product_price_data
+            products.append(product)
+        return products
+            
 
-@router.put("/{product_id}", response_model=ProductResponse)
-def update_product(product_id: int, updated_product: ProductCreate, session: Session = Depends(get_db_session), current_user: User = Depends(admin_required)):
-    product = session.get(Product, product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))
     
-    product.name = updated_product.name
-    session.add(product)
-    session.commit()
-    session.refresh(product)
-    return ProductResponse.from_orm(product)
 
-@router.delete("/{product_id}", response_model=dict)
-def delete_product(product_id: int, session: Session = Depends(get_db_session), current_user: User = Depends(admin_required)):
-    product = session.get(Product, product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    
-    session.delete(product)
-    session.commit()
-    return {"detail": "Product deleted successfully"}
+# Additional routes for creating, updating, and deleting products would go here

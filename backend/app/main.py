@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware
-from app.api import users, subscriptions, products, auth
+from app.api import users, products, auth
 from app.db.database import init_db
 
 app = FastAPI()
@@ -27,5 +27,4 @@ def on_startup():
 # Include routers without additional prefixes
 app.include_router(auth.router, tags=["auth"])
 app.include_router(users.router, tags=["users"])
-app.include_router(subscriptions.router, tags=["subscriptions"])
 app.include_router(products.router, tags=["products"])
