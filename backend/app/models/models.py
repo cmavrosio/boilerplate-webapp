@@ -4,8 +4,7 @@ from typing import Optional, List, Dict
 class UserCreate(SQLModel):
     email: str
     full_name: str
-    password: str  # Plain text password for registration
-
+    password: str 
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -13,7 +12,7 @@ class User(SQLModel, table=True):
     full_name: str
     hashed_password: str
     is_active: bool = True
-    is_admin: bool = False  # New field to indicate admin status
+    is_admin: bool = False
     stripe_customer_id: Optional[str] = None
     valid_subscription: bool = False 
 
@@ -27,50 +26,50 @@ class UserResponse(SQLModel):
 
 
 class Recurring(SQLModel):
-    aggregate_usage: Optional[str] = None  # Usage type: null, sum, last_during_period, or last_ever
-    interval: str  # Billing interval, e.g., "month"
-    interval_count: int  # Number of intervals between billings
-    trial_period_days: Optional[int] = None  # Number of trial period days, if any
-    usage_type: str  # The usage type: metered or licensed
+    aggregate_usage: Optional[str] = None
+    interval: str
+    interval_count: int
+    trial_period_days: Optional[int] = None
+    usage_type: str
 
 class PriceResponse(SQLModel):
-    id: str  # Stripe price ID
-    object: str  # Should always be "price"
-    active: bool  # Indicates if the price is active
-    billing_scheme: str  # Pricing scheme: per_unit or tiered
-    created: int  # Timestamp of price creation
-    currency: str  # Currency code (e.g., "usd")
-    custom_unit_amount: Optional[Dict[str, Optional[int]]] = None  # Custom unit amount object
-    livemode: bool  # Indicates if the price is in live mode
-    lookup_key: Optional[str] = None  # Lookup key for the price
-    metadata: Dict[str, str] = {}  # Metadata from Stripe (key-value pairs)
-    nickname: Optional[str] = None  # Nickname of the price
-    product: str  # The product ID this price is associated with
-    recurring: Optional[Recurring] = None  # Recurrence details
-    tax_behavior: str  # Tax behavior (e.g., "inclusive", "exclusive", "unspecified")
-    tiers_mode: Optional[str] = None  # Pricing tiers mode, if any
-    transform_quantity: Optional[Dict[str, Optional[int]]] = None  # Transform quantity object
-    type: str  # Type of price: one_time or recurring
-    unit_amount: Optional[int] = None  # Unit amount in the smallest currency unit (e.g., cents)
-    unit_amount_decimal: Optional[str] = None  # Unit amount as a decimal string
+    id: str  
+    object: str  
+    active: bool  
+    billing_scheme: str
+    created: int
+    currency: str
+    custom_unit_amount: Optional[Dict[str, Optional[int]]] = None
+    livemode: bool
+    lookup_key: Optional[str] = None
+    metadata: Dict[str, str] = {}
+    nickname: Optional[str] = None
+    product: str
+    recurring: Optional[Recurring] = None
+    tax_behavior: str
+    tiers_mode: Optional[str] = None
+    transform_quantity: Optional[Dict[str, Optional[int]]] = None
+    type: str
+    unit_amount: Optional[int] = None
+    unit_amount_decimal: Optional[str] = None
 
 class ProductResponse(SQLModel):
-    id: str  # Stripe product ID (string format)
-    object: str  # Should always be "product"
-    active: bool  # Indicates if the product is active on Stripe
-    created: int  # Timestamp of product creation
-    default_price: Optional[str] = None  # The default price ID, if any
-    description: Optional[str] = None  # Description of the product
-    images: List[str] = []  # List of image URLs
-    marketing_features: List[str] = []  # Marketing features of the product
-    livemode: bool  # Indicates if the product is in live mode
-    metadata: Dict[str, str] = {}  # Metadata from Stripe (key-value pairs)
-    name: str  # Name of the product
-    package_dimensions: Optional[Dict[str, float]] = None  # Dimensions of the product package, if any
-    shippable: Optional[bool] = None  # Indicates if the product is shippable
-    statement_descriptor: Optional[str] = None  # Extra statement descriptor for the product
-    tax_code: Optional[str] = None  # Tax code associated with the product
-    unit_label: Optional[str] = None  # Label to display on the pricing unit
-    updated: int  # Timestamp of the last product update
-    url: Optional[str] = None  # URL of the product, if any
+    id: str
+    object: str
+    active: bool
+    created: int
+    default_price: Optional[str] = None
+    description: Optional[str] = None 
+    images: List[str] = []
+    marketing_features: List[str] = []
+    livemode: bool
+    metadata: Dict[str, str] = {}
+    name: str
+    package_dimensions: Optional[Dict[str, float]] = None
+    shippable: Optional[bool] = None
+    statement_descriptor: Optional[str] = None
+    tax_code: Optional[str] = None
+    unit_label: Optional[str] = None
+    updated: int
+    url: Optional[str] = None
     price_info: Optional[PriceResponse] = None
