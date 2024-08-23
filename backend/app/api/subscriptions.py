@@ -6,6 +6,7 @@ from app.core.stripe_client import has_active_subscription, has_purchased_lifeti
 from app.models.models import User
 import stripe
 from pydantic import BaseModel
+from app.core.config import settings
 
 class CheckoutSessionRequest(BaseModel):
     price_id: str
@@ -17,7 +18,7 @@ router = APIRouter(
     tags=["subscriptions"],  
 )
 
-endpoint_secret = 'whsec_d92c68a2908695f38ac893ad4e25589555a57fec43492e4bc579f0628b7c2d4b'
+endpoint_secret = settings.ENDPOINT_SECRET
 
 @router.get("/status")
 def get_subscription_status(current_user: User = Depends(get_current_user), db: Session = Depends(get_db_session)):

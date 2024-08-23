@@ -1,8 +1,65 @@
 const backendUrl = 'http://localhost:8000';
 
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+    if (!sessionStorage.getItem('token')) {
+        window.location.href = 'login.html';
+    } else {
+        const token = sessionStorage.getItem('token');
+        try {
+            // Fetch user information
+            const userResponse = await fetch(`${backendUrl}/me/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (userResponse.ok) {
+                const user = await userResponse.json();
+                document.getElementById('welcome-message').textContent = `Welcome, ${user.full_name}!`;
+            } else {
+                console.error('Failed to fetch user:', await userResponse.text());
+            }
+
+            // Check subscription status
+            const subscriptionResponse = await fetch(`${backendUrl}/subscriptions/status`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (subscriptionResponse.ok) {
+                const subscriptionData = await subscriptionResponse.json();
+                if (subscriptionData.subscription_status) {
+                    displaySubscriptionMessage();
+                } else {
+                    // Fetch and display the products
+                    const productsResponse = await fetch(`${backendUrl}/products/`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (productsResponse.ok) {
+                        const products = await productsResponse.json();
+                        displayProducts(products);
+                    } else {
+                        console.error('Failed to fetch products:', await productsResponse.text());
+                    }
+                }
+            } else {
+                console.error('Failed to fetch subscription status:', await subscriptionResponse.text());
+            }
+
+        } catch (error) {
+            console.error('Error during fetch:', error);
+        }
+    }
+});
 document.addEventListener('DOMContentLoaded', async function() {
     const token = sessionStorage.getItem('token');
-
+    
     if (token) {
         try {
             // Fetch user information
